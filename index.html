@@ -1,0 +1,1997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MotoParts Pro — Premium Spare Parts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:       #0a0b0d;
+      --bg2:      #111318;
+      --bg3:      #181c23;
+      --bg4:      #1e2330;
+      --orange:   #ff5e14;
+      --orange2:  #ff8c42;
+      --red:      #e63946;
+      --steel:    #8892a4;
+      --text:     #dde3ee;
+      --white:    #f4f6fb;
+      --border:   rgba(255,94,20,0.15);
+      --border2:  rgba(255,255,255,0.06);
+      --glow:     0 0 40px rgba(255,94,20,0.3);
+      --shadow:   0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      overflow-x: hidden;
+    }
+
+    
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--orange); border-radius: 2px; }
+
+    
+    .page { display: none; min-height: 100vh; }
+    .page.active { display: block; }
+
+
+    #auth-page {
+      min-height: 100vh;
+      display: none;
+      position: relative;
+      overflow: hidden;
+    }
+    #auth-page.active { display: flex; }
+
+    .auth-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(255,94,20,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(230,57,70,0.08) 0%, transparent 50%),
+        linear-gradient(135deg, #0a0b0d 0%, #111318 100%);
+    }
+
+    
+    .auth-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,94,20,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,94,20,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridShift 20s linear infinite;
+    }
+    @keyframes gridShift {
+      0% { background-position: 0 0; }
+      100% { background-position: 60px 60px; }
+    }
+
+    .auth-left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 80px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .auth-brand {
+      margin-bottom: 60px;
+    }
+
+    .auth-brand .logo-text {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .auth-brand .logo-text span { color: var(--orange); }
+
+    .auth-headline {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(48px, 6vw, 80px);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -1px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .auth-headline .accent { color: var(--orange); }
+
+    .auth-sub {
+      font-size: 16px;
+      color: var(--steel);
+      line-height: 1.7;
+      max-width: 420px;
+      margin-bottom: 48px;
+    }
+
+    .auth-features {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .auth-feature {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 14px;
+      color: var(--steel);
+    }
+
+    .feature-icon {
+      width: 36px; height: 36px;
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+      background: rgba(255,94,20,0.05);
+    }
+
+    
+    .auth-right {
+      width: 480px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .auth-panel {
+      width: 100%;
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      padding: 48px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-panel::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--orange), var(--red), transparent);
+    }
+
+    .panel-tabs {
+      display: flex;
+      margin-bottom: 36px;
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .panel-tab {
+      flex: 1;
+      padding: 14px;
+      text-align: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--steel);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: all 0.3s ease;
+    }
+
+    .panel-tab.active {
+      color: var(--orange);
+      border-bottom-color: var(--orange);
+    }
+
+    .panel-tab:hover { color: var(--text); }
+
+    /* Form panels */
+    .form-panel { display: none; }
+    .form-panel.active { display: block; }
+
+    .form-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .form-subtitle {
+      font-size: 13px;
+      color: var(--steel);
+      margin-bottom: 32px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--steel);
+      margin-bottom: 8px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      border-color: var(--orange);
+      background: var(--bg4);
+      box-shadow: 0 0 20px rgba(255,94,20,0.1);
+    }
+
+    .form-group input::placeholder { color: rgba(136,146,164,0.5); }
+
+    .input-icon {
+      position: absolute;
+      right: 14px;
+      bottom: 14px;
+      font-size: 16px;
+      opacity: 0.4;
+    }
+
+    .btn-auth {
+      width: 100%;
+      padding: 16px;
+      background: var(--orange);
+      color: white;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      margin-top: 8px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .btn-auth::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .btn-auth:hover::before { left: 100%; }
+    .btn-auth:hover {
+      background: var(--orange2);
+      box-shadow: var(--glow);
+      transform: translateY(-2px);
+    }
+
+    .form-divider {
+      text-align: center;
+      margin: 20px 0;
+      position: relative;
+      font-size: 12px;
+      color: var(--steel);
+    }
+
+    .form-divider::before, .form-divider::after {
+      content: '';
+      position: absolute;
+      top: 50%; width: 40%;
+      height: 1px;
+      background: var(--border2);
+    }
+    .form-divider::before { left: 0; }
+    .form-divider::after { right: 0; }
+
+    .form-error {
+      color: var(--red);
+      font-size: 12px;
+      margin-top: 6px;
+      display: none;
+    }
+
+    .form-error.show { display: block; }
+
+    .form-success {
+      background: rgba(255,94,20,0.1);
+      border: 1px solid rgba(255,94,20,0.3);
+      color: var(--orange2);
+      font-size: 13px;
+      padding: 12px 16px;
+      margin-top: 16px;
+      display: none;
+      text-align: center;
+    }
+    .form-success.show { display: block; }
+
+    /* ════════════════════════════════
+       MAIN SITE
+    ════════════════════════════════ */
+    #main-site { display: none; }
+    #main-site.active { display: block; }
+
+    /* ─── NAVBAR ─── */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: rgba(10,11,13,0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border2);
+      padding: 0 60px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .nav-logo span { color: var(--orange); }
+
+    .nav-center {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-center a {
+      color: var(--steel);
+      text-decoration: none;
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 600;
+      transition: color 0.3s;
+      position: relative;
+    }
+
+    .nav-center a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 2px;
+      background: var(--orange);
+      transition: width 0.3s;
+    }
+
+    .nav-center a:hover { color: var(--white); }
+    .nav-center a:hover::after { width: 100%; }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--steel);
+    }
+
+    .nav-avatar {
+      width: 34px; height: 34px;
+      background: var(--orange);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .nav-cart {
+      position: relative;
+      cursor: pointer;
+      font-size: 20px;
+      transition: transform 0.2s;
+    }
+    .nav-cart:hover { transform: scale(1.1); }
+
+    .cart-badge {
+      position: absolute;
+      top: -6px; right: -8px;
+      width: 18px; height: 18px;
+      background: var(--orange);
+      border-radius: 50%;
+      font-size: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      color: white;
+    }
+
+    .btn-logout {
+      padding: 8px 18px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--steel);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-logout:hover {
+      border-color: var(--orange);
+      color: var(--orange);
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      padding-top: 70px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 70% 40%, rgba(255,94,20,0.14) 0%, transparent 55%),
+        radial-gradient(ellipse at 10% 80%, rgba(230,57,70,0.08) 0%, transparent 40%),
+        linear-gradient(135deg, #0a0b0d 0%, #111318 100%);
+    }
+
+    /* Diagonal stripe accent */
+    .hero-stripes {
+      position: absolute;
+      right: -100px; top: 0; bottom: 0;
+      width: 600px;
+      background: repeating-linear-gradient(
+        -55deg,
+        transparent,
+        transparent 30px,
+        rgba(255,94,20,0.025) 30px,
+        rgba(255,94,20,0.025) 32px
+      );
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 0 60px;
+      max-width: 800px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border: 1px solid var(--border);
+      background: rgba(255,94,20,0.06);
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: slideIn 0.8s ease 0.2s forwards;
+    }
+
+    .badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--orange);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    .hero-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(56px, 9vw, 110px);
+      font-weight: 900;
+      line-height: 0.9;
+      letter-spacing: -2px;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: slideIn 0.8s ease 0.4s forwards;
+    }
+
+    .hero-title .line-orange { color: var(--orange); }
+    .hero-title .line-outline {
+      color: transparent;
+      -webkit-text-stroke: 1.5px rgba(255,94,20,0.35);
+    }
+
+    .hero-desc {
+      font-size: 17px;
+      color: var(--steel);
+      line-height: 1.7;
+      max-width: 520px;
+      margin-bottom: 44px;
+      opacity: 0;
+      animation: slideIn 0.8s ease 0.6s forwards;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: slideIn 0.8s ease 0.8s forwards;
+    }
+
+    .btn-primary {
+      padding: 16px 36px;
+      background: var(--orange);
+      color: white;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.5s;
+    }
+
+    .btn-primary:hover::after { transform: translateX(100%); }
+    .btn-primary:hover {
+      background: var(--orange2);
+      box-shadow: var(--glow);
+      transform: translateY(-3px);
+    }
+
+    .btn-outline {
+      padding: 16px 36px;
+      background: transparent;
+      color: var(--text);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      border: 1px solid var(--border2);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--orange);
+      color: var(--orange);
+      box-shadow: var(--glow);
+    }
+
+    .hero-stats {
+      position: absolute;
+      bottom: 60px; right: 60px;
+      display: flex;
+      gap: 40px;
+      z-index: 2;
+      opacity: 0;
+      animation: slideIn 0.8s ease 1.0s forwards;
+    }
+
+    .hero-stat {
+      text-align: right;
+    }
+
+    .hero-stat-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 40px;
+      font-weight: 900;
+      color: var(--orange);
+      line-height: 1;
+    }
+
+    .hero-stat-label {
+      font-size: 11px;
+      color: var(--steel);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── TICKER ─── */
+    .ticker {
+      background: var(--orange);
+      padding: 10px 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .ticker-inner {
+      display: inline-flex;
+      animation: tickerScroll 30s linear infinite;
+    }
+
+    .ticker-item {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: white;
+      padding: 0 40px;
+    }
+
+    .ticker-dot {
+      color: rgba(255,255,255,0.4);
+    }
+
+    @keyframes tickerScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ─── CATEGORIES ─── */
+    .section {
+      padding: 100px 60px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 52px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 900;
+      letter-spacing: -1px;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .section-link {
+      font-size: 13px;
+      color: var(--orange);
+      text-decoration: none;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 2px;
+      transition: border-color 0.3s;
+    }
+    .section-link:hover { border-color: var(--orange); }
+
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .cat-card {
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      padding: 36px 28px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease;
+    }
+
+    .cat-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 0;
+      background: linear-gradient(0deg, rgba(255,94,20,0.08), transparent);
+      transition: height 0.4s ease;
+    }
+
+    .cat-card:hover::before { height: 100%; }
+
+    .cat-card:hover {
+      border-color: rgba(255,94,20,0.4);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4), var(--glow);
+    }
+
+    .cat-icon {
+      font-size: 44px;
+      margin-bottom: 20px;
+      display: block;
+      transition: transform 0.3s;
+    }
+    .cat-card:hover .cat-icon { transform: scale(1.1) rotate(-5deg); }
+
+    .cat-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .cat-count {
+      font-size: 12px;
+      color: var(--steel);
+      letter-spacing: 1px;
+    }
+
+    .cat-arrow {
+      position: absolute;
+      bottom: 24px; right: 24px;
+      color: var(--orange);
+      font-size: 20px;
+      opacity: 0;
+      transform: translateX(-8px);
+      transition: all 0.3s;
+    }
+    .cat-card:hover .cat-arrow { opacity: 1; transform: translateX(0); }
+
+    /* ─── PRODUCTS ─── */
+    .products-section {
+      padding: 100px 60px;
+      background: var(--bg2);
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 10px 24px;
+      background: transparent;
+      border: 1px solid var(--border2);
+      color: var(--steel);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .filter-btn.active, .filter-btn:hover {
+      background: var(--orange);
+      border-color: var(--orange);
+      color: white;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .product-card {
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      cursor: pointer;
+    }
+
+    .product-card:hover {
+      border-color: rgba(255,94,20,0.3);
+      transform: translateY(-8px);
+      box-shadow: var(--shadow), 0 0 30px rgba(255,94,20,0.1);
+    }
+
+    .product-badge {
+      position: absolute;
+      top: 14px; left: 14px;
+      padding: 4px 12px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      z-index: 2;
+    }
+
+    .badge-hot { background: var(--red); color: white; }
+    .badge-new { background: var(--orange); color: white; }
+    .badge-sale {
+      background: transparent;
+      border: 1px solid var(--orange);
+      color: var(--orange);
+    }
+
+    .product-img {
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 72px;
+      background: var(--bg4);
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+
+    .product-card:hover .product-img { background: var(--bg3); }
+
+    .product-img-overlay {
+      position: absolute; inset: 0;
+      background: rgba(255,94,20,0.04);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .product-card:hover .product-img-overlay { opacity: 1; }
+
+    .product-quick-add {
+      position: absolute;
+      bottom: -40px;
+      left: 0; right: 0;
+      height: 40px;
+      background: var(--orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: white;
+      transition: bottom 0.3s ease;
+    }
+    .product-card:hover .product-quick-add { bottom: 0; }
+
+    .product-info {
+      padding: 20px;
+    }
+
+    .product-category {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 8px;
+    }
+
+    .product-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    .product-compat {
+      font-size: 11px;
+      color: var(--steel);
+      margin-bottom: 14px;
+    }
+
+    .product-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .product-price {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--orange);
+    }
+
+    .product-price-old {
+      font-size: 13px;
+      color: var(--steel);
+      text-decoration: line-through;
+      margin-left: 6px;
+    }
+
+    .product-rating {
+      font-size: 12px;
+      color: #f4b942;
+    }
+
+    /* ─── BANNER ─── */
+    .promo-banner {
+      margin: 0 60px;
+      background: linear-gradient(135deg, var(--bg3) 0%, var(--bg4) 100%);
+      border: 1px solid var(--border);
+      padding: 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .promo-banner::before {
+      content: '⚙';
+      position: absolute;
+      right: -20px; top: -40px;
+      font-size: 220px;
+      opacity: 0.03;
+      animation: rotateSlow 20s linear infinite;
+    }
+
+    @keyframes rotateSlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .promo-label {
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 12px;
+    }
+
+    .promo-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 48px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -1px;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .promo-title span { color: var(--orange); }
+
+    .promo-desc {
+      font-size: 15px;
+      color: var(--steel);
+      max-width: 420px;
+    }
+
+    /* ─── BRANDS ─── */
+    .brands-section {
+      padding: 60px;
+      background: var(--bg);
+    }
+
+    .brands-label {
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--steel);
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    .brands-track {
+      display: flex;
+      gap: 0;
+      overflow: hidden;
+    }
+
+    .brands-inner {
+      display: flex;
+      gap: 0;
+      animation: brandScroll 20s linear infinite;
+    }
+
+    .brand-item {
+      padding: 20px 48px;
+      border: 1px solid var(--border2);
+      border-right: none;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--steel);
+      white-space: nowrap;
+      transition: all 0.3s;
+    }
+
+    .brand-item:hover {
+      color: var(--orange);
+      background: rgba(255,94,20,0.04);
+    }
+
+    @keyframes brandScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ─── FEATURES ─── */
+    .features-section {
+      padding: 100px 60px;
+      background: var(--bg2);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-top: 52px;
+    }
+
+    .feature-card {
+      padding: 36px 28px;
+      border: 1px solid var(--border2);
+      background: var(--bg3);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+
+    .feature-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 2px;
+      background: linear-gradient(90deg, var(--orange), var(--red));
+      transition: width 0.4s ease;
+    }
+
+    .feature-card:hover::after { width: 100%; }
+    .feature-card:hover { border-color: var(--border); transform: translateY(-4px); }
+
+    .feature-icon {
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    .feature-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    .feature-desc {
+      font-size: 14px;
+      color: var(--steel);
+      line-height: 1.6;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--bg);
+      border-top: 1px solid var(--border2);
+      padding: 60px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 60px;
+      margin-bottom: 60px;
+    }
+
+    .footer-brand p {
+      font-size: 14px;
+      color: var(--steel);
+      line-height: 1.7;
+      margin-top: 16px;
+      max-width: 280px;
+    }
+
+    .footer-col h4 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      color: var(--text);
+    }
+
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 10px; }
+    .footer-col ul li a {
+      color: var(--steel);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.2s;
+    }
+    .footer-col ul li a:hover { color: var(--orange); }
+
+    .footer-bottom {
+      border-top: 1px solid var(--border2);
+      padding-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-bottom p { font-size: 12px; color: var(--steel); }
+    .footer-accent { color: var(--orange); }
+
+    /* ─── CART SIDEBAR ─── */
+    .cart-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 2000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .cart-overlay.open { opacity: 1; pointer-events: all; }
+
+    .cart-sidebar {
+      position: fixed;
+      top: 0; right: -480px;
+      width: 480px; height: 100%;
+      background: var(--bg2);
+      border-left: 1px solid var(--border2);
+      z-index: 2001;
+      transition: right 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+      display: flex;
+      flex-direction: column;
+    }
+    .cart-sidebar.open { right: 0; }
+
+    .cart-header {
+      padding: 28px 32px;
+      border-bottom: 1px solid var(--border2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cart-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .cart-close {
+      width: 36px; height: 36px;
+      border: 1px solid var(--border2);
+      background: transparent;
+      color: var(--text);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .cart-close:hover { border-color: var(--orange); color: var(--orange); }
+
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 32px;
+    }
+
+    .cart-item {
+      display: flex;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .cart-item-img {
+      width: 70px; height: 70px;
+      background: var(--bg4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px;
+      flex-shrink: 0;
+    }
+
+    .cart-item-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .cart-item-price {
+      color: var(--orange);
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .cart-item-remove {
+      margin-left: auto;
+      background: transparent;
+      border: none;
+      color: var(--steel);
+      cursor: pointer;
+      font-size: 16px;
+      transition: color 0.2s;
+      align-self: flex-start;
+    }
+    .cart-item-remove:hover { color: var(--red); }
+
+    .cart-footer {
+      padding: 24px 32px;
+      border-top: 1px solid var(--border2);
+    }
+
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .cart-total-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .cart-total-price {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--orange);
+    }
+
+    .btn-checkout {
+      width: 100%;
+      padding: 18px;
+      background: var(--orange);
+      color: white;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .btn-checkout:hover { background: var(--orange2); box-shadow: var(--glow); }
+
+    .cart-empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--steel);
+    }
+
+    .cart-empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
+    .cart-empty p { font-size: 14px; }
+
+    /* ─── REVEAL ANIMATIONS ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-30px);
+      transition: all 0.7s ease;
+    }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+
+    /* ─── NOTIFICATION ─── */
+    .notification {
+      position: fixed;
+      bottom: 30px; right: 30px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--orange);
+      padding: 16px 20px;
+      z-index: 3000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+      min-width: 280px;
+    }
+
+    .notification.show { transform: translateY(0); opacity: 1; }
+
+    .notif-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .notif-desc { font-size: 13px; color: var(--steel); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 1100px) {
+      .products-grid, .categories-grid { grid-template-columns: repeat(2, 1fr); }
+      .features-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+    }
+
+    @media (max-width: 768px) {
+      .navbar { padding: 0 20px; }
+      .nav-center { display: none; }
+      .section, .products-section, .features-section { padding: 60px 20px; }
+      .hero-content { padding: 0 20px; }
+      .hero-stats { display: none; }
+      .promo-banner { margin: 0 20px; padding: 40px 24px; flex-direction: column; gap: 24px; }
+      .auth-left { display: none; }
+      .auth-right { width: 100%; padding: 24px; }
+      .brands-section, footer { padding: 40px 20px; }
+      .footer-grid { grid-template-columns: 1fr; gap: 30px; }
+      .cart-sidebar { width: 100%; right: -100%; }
+      .products-grid { grid-template-columns: 1fr 1fr; }
+      .categories-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════ AUTH PAGE ════════ -->
+<div id="auth-page" class="active">
+  <div class="auth-bg"></div>
+  <div class="auth-grid"></div>
+
+  <!-- Left branding -->
+  <div class="auth-left">
+    <div class="auth-brand">
+      <div class="logo-text">Moto<span>Parts</span> Pro</div>
+    </div>
+    <h1 class="auth-headline">
+      Genuine<br>
+      <span class="accent">Spare</span><br>
+      Parts
+    </h1>
+    <p class="auth-sub">
+      Kenya's premier destination for motorbike and vehicle spare parts.
+      Trusted brands, fast delivery, unbeatable prices.
+    </p>
+    <div class="auth-features">
+      <div class="auth-feature">
+        <div class="feature-icon"><img src=" https://sl.bing.net/endaQmzF8ou" alt="Logo" ></div>
+        <span>Nationwide delivery within 24–48 hours</span>
+      </div>
+      <div class="auth-feature">
+        <div class="feature-icon"><img src="https://sl.bing.net/CWvDSFh6T6"></div>
+        <span>100% genuine OEM and aftermarket parts</span>
+      </div>
+      <div class="auth-feature">
+        <div class="feature-icon"><img src="https://sl.bing.net/iHPVPYF10bQ" alt="Logo" width="200" height="150"></div>
+        <span>Expert support for all vehicle makes and models</span>
+      </div>
+      <div class="auth-feature">
+        <div class="feature-icon"><img src="https://sl.bing.net/cLku4DgVaF2" alt="Logo" width="200" height="150"></div>
+        <span>Secure payments & easy returns</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right form panel -->
+  <div class="auth-right">
+    <div class="auth-panel">
+      <div class="panel-tabs">
+        <div class="panel-tab active" onclick="switchTab('login')">Login</div>
+        <div class="panel-tab" onclick="switchTab('register')">Register</div>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <div class="form-panel active" id="login-panel">
+        <h2 class="form-title">Welcome Back</h2>
+        <p class="form-subtitle">Sign in to access your account</p>
+
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="login-email" placeholder="you@example.com">
+          <span class="input-icon">✉</span>
+          <div class="form-error" id="login-email-err">Please enter a valid email address.</div>
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-pass" placeholder="Enter your password">
+          <span class="input-icon">🔒</span>
+          <div class="form-error" id="login-pass-err">Password must be at least 6 characters.</div>
+        </div>
+
+        <button class="btn-auth" onclick="handleLogin()">Sign In →</button>
+        <div class="form-success" id="login-success">✓ Login successful! Redirecting...</div>
+      </div>
+
+      <!-- REGISTER FORM -->
+      <div class="form-panel" id="register-panel">
+        <h2 class="form-title">Create Account</h2>
+        <p class="form-subtitle">Join thousands of satisfied customers</p>
+
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="reg-name" placeholder="John Doe">
+          <span class="input-icon">👤</span>
+          <div class="form-error" id="reg-name-err">Please enter your full name.</div>
+        </div>
+
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="reg-user" placeholder="johndoe123">
+          <span class="input-icon">@</span>
+          <div class="form-error" id="reg-user-err">Username must be at least 3 characters.</div>
+        </div>
+
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="reg-email" placeholder="you@example.com">
+          <span class="input-icon">✉</span>
+          <div class="form-error" id="reg-email-err">Please enter a valid email address.</div>
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="reg-pass" placeholder="Minimum 6 characters">
+          <span class="input-icon">🔒</span>
+          <div class="form-error" id="reg-pass-err">Password must be at least 6 characters.</div>
+        </div>
+
+        <button class="btn-auth" onclick="handleRegister()">Create Account →</button>
+        <div class="form-success" id="reg-success">✓ Account created! Signing you in...</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ════════ MAIN SITE ════════ -->
+<div id="main-site">
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-logo">Moto<span>Parts</span> Pro</div>
+    <ul class="nav-center">
+      <li><a href="#categories">Categories</a></li>
+      <li><a href="#products">Products</a></li>
+      <li><a href="#brands">Brands</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="nav-user">
+        <div class="nav-avatar" id="nav-avatar">W</div>
+        <span id="nav-username">User</span>
+      </div>
+      <div class="nav-cart" onclick="toggleCart()">
+        🛒 <span class="cart-badge" id="cart-badge">0</span>
+      </div>
+      <button class="btn-logout" onclick="handleLogout()">Logout</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-bg"></div>
+    <div class="hero-stripes"></div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Free Delivery on Orders Over KSh 5,000
+      </div>
+      <h1 class="hero-title">
+        Premium<br>
+        <span class="line-orange">Spare</span><br>
+        <span class="line-outline">Parts</span>
+      </h1>
+      <p class="hero-desc">
+        Kenya's most trusted source for genuine motorbike and vehicle spare parts.
+        From engines to brakes — we stock it all, and we deliver fast.
+      </p>
+      <div class="hero-btns">
+        <a href="#products" class="btn-primary">Shop Now</a>
+        <a href="#categories" class="btn-outline">Browse Categories</a>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">12K+</div>
+        <div class="hero-stat-label">Parts in Stock</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">50+</div>
+        <div class="hero-stat-label">Brands</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">8K+</div>
+        <div class="hero-stat-label">Happy Customers</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-inner" id="ticker-inner"></div>
+  </div>
+
+  <!-- CATEGORIES -->
+  <section class="section" id="categories">
+    <div class="section-header reveal">
+      <div>
+        <p class="section-label">// Shop by Category</p>
+        <h2 class="section-title">What Are You Looking For?</h2>
+      </div>
+      <a href="#" class="section-link">View All →</a>
+    </div>
+    <div class="categories-grid">
+      <div class="cat-card reveal" style="transition-delay:0.05s">
+        <span class="cat-icon"><img src="https://media.istockphoto.com/id/1139697726/photo/car-engine-disassembled-many-parts.jpg?s=1024x1024&w=is&k=20&c=BwAcOmMOiyHGXmNzDyPqPffHVAuaxQCVadlXp6K0tXA="></span>
+        <div class="cat-name">Engine Parts</div>
+        <div class="cat-count">2,840 Products</div>
+        <div class="cat-arrow">→</div>
+      </div>
+      <div class="cat-card reveal" style="transition-delay:0.1s">
+        <span class="cat-icon"><img src="https://media.istockphoto.com/id/1193247875/photo/handsome-mechanic-in-uniform.jpg?s=1024x1024&w=is&k=20&c=fhBEfZe5oLuhQ1c6MRhbETBwnzXoPsZeBaIHdIolsP4="></span>
+        <div class="cat-name">Brakes & Wheels</div>
+        <div class="cat-count">1,620 Products</div>
+        <div class="cat-arrow">→</div>
+      </div>
+      <div class="cat-card reveal" style="transition-delay:0.15s">
+        <span class="cat-icon"><img src="https://media.istockphoto.com/id/1279523831/photo/mechanic-changing-new-halogen-bulb-in-car-headlight.jpg?s=1024x1024&w=is&k=20&c=JpWymCmQ7wksbLPwg5ZRLWb6MFKYbn5CkrSU5hebWsU="></span>
+        <div class="cat-name">Electrical & Lights</div>
+        <div class="cat-count">980 Products</div>
+        <div class="cat-arrow">→</div>
+      </div>
+      <div class="cat-card reveal" style="transition-delay:0.2s">
+        <span class="cat-icon"><img src="https://media.istockphoto.com/id/497859268/vector/vector-motorcycle-spares-concept.jpg?s=1024x1024&w=is&k=20&c=Yk175LgueQ-vBMZ9SlIdh5-5CRHqaq4Bkd3LGVo9fdY="></span>
+        <div class="cat-name">Motorbike Parts</div>
+        <div class="cat-count">3,400 Products</div>
+        <div class="cat-arrow">→</div>
+      </div>
+      <div class="cat-card reveal" style="transition-delay:0.25s">
+        <span class="cat-icon"><img src="https://media.istockphoto.com/id/942628296/photo/details-of-the-car.jpg?s=1024x1024&w=is&k=20&c=_38ykho8BPeq4BlKKB3jntBy0Si3d9rqUScjtbSVlhI="></span>
+        <div class="cat-name">Vehicle Body</div>
+        <div class="cat-count">1,100 Products</div>
+        <div class="cat-arrow">→</div>
+      </div>
+      <div class="cat-card reveal" style="transition-delay:0.3s">
+        <span class="cat-icon"><img src="https://media.istockphoto.com/id/1362943652/photo/3d-illustration-of-car-engine-and-gearbox-oil-oil-for-car-transmission-gears-in-oil-and.jpg?s=1024x1024&w=is&k=20&c=9_wXLxSkpkZFqLXDzWyQOogZnp5RjdTpc8wyKIQxmnc="></span>
+        <div class="cat-name">Oils & Fluids</div>
+        <div class="cat-count">560 Products</div>
+        <div class="cat-arrow">→</div>
+      </div>
+      <div class="cat-card reveal" style="transition-delay:0.35s">
+        <span class="cat-icon"><img src="https://media.istockphoto.com/id/1059569798/vector/vector-car-suspension-parts.jpg?s=1024x1024&w=is&k=20&c=EhQ4oCijXaY2mdHThrO0B1ktSoRkpn1j7kw3X7c8fWI="></span>
+        <div class="cat-name">Suspension</div>
+        <div class="cat-count">740 Products</div>
+        <div class="cat-arrow">→</div>
+      </div>
+      <div class="cat-card reveal" style="transition-delay:0.4s">
+        <span class="cat-icon"><img src="https://media.istockphoto.com/id/545803240/photo/hot-rod-v8-engine-3d-render.jpg?s=1024x1024&w=is&k=20&c=bYyv1ahNwQ88kK5LMovzhCnT3KyuWlyuDAAjFSE0CvA="></span>
+        <div class="cat-name">Exhaust System</div>
+        <div class="cat-count">420 Products</div>
+        <div class="cat-arrow">→</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCTS -->
+  <section class="products-section" id="products">
+    <div class="section-header reveal">
+      <div>
+        <p class="section-label">// Featured Products</p>
+        <h2 class="section-title">Top Selling Parts</h2>
+      </div>
+      <a href="#" class="section-link">View All →</a>
+    </div>
+    <div class="filter-bar reveal">
+      <button class="filter-btn active" onclick="filterProducts(this,'all')">All Parts</button>
+      <button class="filter-btn" onclick="filterProducts(this,'moto')">Motorbike</button>
+      <button class="filter-btn" onclick="filterProducts(this,'vehicle')">Vehicle</button>
+      <button class="filter-btn" onclick="filterProducts(this,'engine')">Engine</button>
+      <button class="filter-btn" onclick="filterProducts(this,'electrical')">Electrical</button>
+    </div>
+    <div class="products-grid" id="products-grid"></div>
+  </section>
+
+  <!-- PROMO BANNER -->
+  <div class="promo-banner reveal">
+    <div>
+      <p class="promo-label">// Limited Time Offer</p>
+      <h2 class="promo-title">Up To <span>40% Off</span><br>Engine Parts</h2>
+      <p class="promo-desc">Shop our massive engine clearance sale. Genuine parts from top brands at unbeatable prices. Offer ends Sunday.</p>
+    </div>
+    <a href="#products" class="btn-primary" style="white-space:nowrap; margin-top:0;">Shop the Sale →</a>
+  </div>
+
+  <!-- BRANDS -->
+  <div class="brands-section" id="brands">
+    <p class="brands-label">Trusted Brands We Stock</p>
+    <div class="brands-track">
+      <div class="brands-inner" id="brands-inner"></div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="features-section" id="contact">
+    <div class="section-header reveal">
+      <div>
+        <p class="section-label">// Why Choose Us</p>
+        <h2 class="section-title">The MotoParts Difference</h2>
+      </div>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal" style="transition-delay:0.05s">
+        <div class="feature-icon"><img src="https://sl.bing.net/endaQmzF8ou"></div>
+        <div class="feature-title">Fast Delivery</div>
+        <div class="feature-desc">24–48 hour delivery across Kenya. Same-day dispatch for Nairobi orders placed before 2PM.</div>
+      </div>
+      <div class="feature-card reveal" style="transition-delay:0.1s">
+        <div class="feature-icon"><img src="https://sl.bing.net/CWvDSFh6T6"></div>
+        <div class="feature-title">Genuine Parts</div>
+        <div class="feature-desc">Every part is 100% genuine — OEM or certified aftermarket. No counterfeits, ever.</div>
+      </div>
+      <div class="feature-card reveal" style="transition-delay:0.15s">
+        <div class="feature-icon"><img src="https://sl.bing.net/iHPVPYF10bQ"></div>
+        <div class="feature-title">Expert Support</div>
+        <div class="feature-desc">Our team of mechanics and parts specialists are on hand to help you find the right part.</div>
+      </div>
+      <div class="feature-card reveal" style="transition-delay:0.2s">
+        <div class="feature-icon"><img src="https://sl.bing.net/cS1Kh2UCUfs"></div>
+        <div class="feature-title">Easy Returns</div>
+        <div class="feature-desc">30-day hassle-free returns on all parts. Wrong part? Wrong fitment? We've got you covered.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo">Moto<span style="color:var(--orange)">Parts</span> Pro</div>
+        <p>Kenya's most trusted online spare parts store for motorbikes and vehicles. Quality parts, unbeatable prices, fast delivery.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#categories">Categories</a></li>
+          <li><a href="#products">Products</a></li>
+          <li><a href="#">Track Order</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Returns Policy</a></li>
+          <li><a href="#">Shipping Info</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="#">📞 +254 708 429 488</a></li>
+          <li><a href="#">✉ info@motopartspro.co.ke</a></li>
+          <li><a href="#">📍 Nairobi, Kenya</a></li>
+          <li><a href="#">Mon–Sat: 8AM–6PM</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 <span class="footer-accent">MotoParts Pro</span>. All rights reserved.</p>
+      <p>Made with ❤ in <span class="footer-accent">Nairobi, Kenya</span></p>
+    </div>
+  </footer>
+
+</div>
+
+<!-- CART SIDEBAR -->
+<div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cart-sidebar">
+  <div class="cart-header">
+    <div class="cart-title">Your Cart (<span id="cart-count">0</span>)</div>
+    <button class="cart-close" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cart-items-list">
+    <div class="cart-empty">
+      <div class="cart-empty-icon">🛒</div>
+      <p>Your cart is empty.<br>Start shopping!</p>
+    </div>
+  </div>
+  <div class="cart-footer" id="cart-footer" style="display:none">
+    <div class="cart-total">
+      <span class="cart-total-label">Total</span>
+      <span class="cart-total-price">KSh <span id="cart-total">0</span></span>
+    </div>
+    <button class="btn-checkout">Proceed to Checkout →</button>
+  </div>
+</div>
+
+<!-- NOTIFICATION -->
+<div class="notification" id="notification">
+  <div class="notif-title" id="notif-title">Item Added!</div>
+  <div class="notif-desc" id="notif-desc">Product added to your cart.</div>
+</div>
+
+<script>
+  // ══ PRODUCTS DATA ══
+  const products = [
+    { id:1, name:'Piston Kit', cat:'engine', type:'moto', price:3200, oldPrice:4500, image:'https://media.istockphoto.com/id/521540462/photo/automotive-engine-gearbox-assembly-is-isolated-on-a-white-backgr.jpg?s=1024x1024&w=is&k=20&c=oNvVfWfSiSJ6NVuIkZmkOCkQg8GKkSY-nw6BTVHImB8', badge:'hot', rating:'★★★★★', compat:'Honda CB125 / Yamaha YBR' },
+    { id:2, name:'Disc Brake Pad Set', cat:'brakes', type:'vehicle', price:1850, oldPrice:null, image:'https://media.istockphoto.com/id/1284268855/photo/car-brakes-red-caliper.jpg?s=1024x1024&w=is&k=20&c=28hBMkjNybyevjOrTSsm_nIJmxTTW1Vj6V8MUZQT1IQ', badge:'new', rating:'★★★★☆', compat:'Toyota Corolla / Nissan X-Trail' },
+    { id:3, name:'LED Headlight Bulb', cat:'electrical', type:'moto', price:950, oldPrice:1400, image:'https://media.istockphoto.com/id/1125767269/photo/burned-car-light-old-worn-out-car-parts-black-background.jpg?s=1024x1024&w=is&k=20&c=5sUsOg0d0r1lKD9kC9tEzBdayo-TUDfkUZ4d4z8SioE', badge:'sale', rating:'★★★★★', compat:'Universal Fit' },
+    { id:4, name:'Engine Oil Filter', cat:'engine', type:'vehicle', price:650, oldPrice:null, image:'https://media.istockphoto.com/id/948532736/photo/car-oil-filters-and-motor-oil-plastic-can-3d-illustration-3d-render-isolated-on-white.jpg?s=1024x1024&w=is&k=20&c=H1j3gRF9I3E83GVjUUKsaOaoyPD60Xjsl1au5RegUGo', badge:'new', rating:'★★★☆☆', compat:'All Toyota Models' },
+    { id:5, name:'Chain & Sprocket Kit', cat:'moto', type:'moto', price:4200, oldPrice:5800, image:'https://media.istockphoto.com/id/843268848/photo/kit-of-timing-belt-with-rollers-auto-parts-spare-parts.jpg?s=1024x1024&w=is&k=20&c=q_OpBqZR91gB2N3OMpQGII8ftgJIhuvAz9M4F3K3Wis', badge:'hot', rating:'★★★★★', compat:'Bajaj Boxer / TVS Metro' },
+    { id:6, name:'Spark Plug NGK', cat:'engine', type:'vehicle', price:380, oldPrice:null, image:'https://media.istockphoto.com/id/467643666/photo/set-of-spark-plugs-sequence.jpg?s=1024x1024&w=is&k=20&c=SYvi9dQbTJ5Ci3pJT8PpR8jomi-ELbLcbRPSgenJ-7U', badge:'new', rating:'★★★★☆', compat:'Universal Fit' },
+    { id:7, name:'Side Mirror Assembly', cat:'body', type:'vehicle', price:2100, oldPrice:2800, image:'https://media.istockphoto.com/id/178598439/photo/spare-parts-for-cars.jpg?s=1024x1024&w=is&k=20&c=y9hsxv__UeUt-4Z3ZVVuonSS4p5RLspb3YCNi058kCk', badge:'sale', rating:'★★★★☆', compat:'Toyota Vitz / Honda Fit' },
+    { id:8, name:'Shock Absorber', cat:'suspension', type:'moto', price:3800, oldPrice:null, image:'https://media.istockphoto.com/id/178598439/photo/spare-parts-for-cars.jpg?s=1024x1024&w=is&k=20&c=y9hsxv__UeUt-4Z3ZVVuonSS4p5RLspb3YCNi058kCk', badge:'new', rating:'★★★★★', compat:'Honda CG125 / Boxer BM150' },
+  ];
+
+  let cart = [];
+  let currentUser = null;
+
+  // ══ AUTH TAB SWITCH ══
+  function switchTab(tab) {
+    document.querySelectorAll('.panel-tab').forEach((t,i) => {
+      t.classList.toggle('active', (i === 0 && tab==='login') || (i === 1 && tab==='register'));
+    });
+    document.getElementById('login-panel').classList.toggle('active', tab==='login');
+    document.getElementById('register-panel').classList.toggle('active', tab==='register');
+  }
+
+  // ══ VALIDATION HELPERS ══
+  function showErr(id, show) {
+    document.getElementById(id).classList.toggle('show', show);
+  }
+
+  // ══ LOGIN ══
+  function handleLogin() {
+    const email = document.getElementById('login-email').value.trim();
+    const pass  = document.getElementById('login-pass').value.trim();
+    let valid = true;
+
+    showErr('login-email-err', !email.includes('@') || email === '');
+    showErr('login-pass-err', pass.length < 6);
+
+    if (!email.includes('@') || email === '') valid = false;
+    if (pass.length < 6) valid = false;
+
+    if (valid) {
+      const name = email.split('@')[0];
+      currentUser = { name, email };
+      document.getElementById('login-success').classList.add('show');
+      setTimeout(() => enterSite(name), 1200);
+    }
+  }
+
+  // ══ REGISTER ══
+  function handleRegister() {
+    const name  = document.getElementById('reg-name').value.trim();
+    const user  = document.getElementById('reg-user').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const pass  = document.getElementById('reg-pass').value.trim();
+    let valid = true;
+
+    showErr('reg-name-err', name === '');
+    showErr('reg-user-err', user.length < 3);
+    showErr('reg-email-err', !email.includes('@') || email === '');
+    showErr('reg-pass-err', pass.length < 6);
+
+    if (!name) valid = false;
+    if (user.length < 3) valid = false;
+    if (!email.includes('@')) valid = false;
+    if (pass.length < 6) valid = false;
+
+    if (valid) {
+      currentUser = { name, email, username: user };
+      document.getElementById('reg-success').classList.add('show');
+      setTimeout(() => enterSite(user || name), 1200);
+    }
+  }
+
+  // ══ ENTER SITE ══
+  function enterSite(name) {
+    document.getElementById('auth-page').classList.remove('active');
+    document.getElementById('main-site').classList.add('active');
+
+    // Set user info
+    const initials = name.charAt(0).toUpperCase();
+    document.getElementById('nav-avatar').textContent = initials;
+    document.getElementById('nav-username').textContent = name;
+
+    renderProducts('all');
+    setupTicker();
+    setupBrands();
+    setupReveal();
+    window.scrollTo(0, 0);
+    showNotification('Welcome!', `Signed in as ${name}`);
+  }
+
+  // ══ LOGOUT ══
+  function handleLogout() {
+    currentUser = null;
+    cart = [];
+    document.getElementById('main-site').classList.remove('active');
+    document.getElementById('auth-page').classList.add('active');
+    document.getElementById('login-success').classList.remove('show');
+    document.getElementById('reg-success').classList.remove('show');
+    document.getElementById('login-email').value = '';
+    document.getElementById('login-pass').value = '';
+    updateCartUI();
+  }
+
+  // ══ PRODUCTS ══
+  function renderProducts(filter) {
+    const grid = document.getElementById('products-grid');
+    const filtered = filter === 'all' ? products : products.filter(p =>
+      p.cat === filter || p.type === filter
+    );
+
+    grid.innerHTML = filtered.map(p => `
+      <div class="product-card reveal" data-id="${p.id}">
+        ${p.badge ? `<span class="product-badge badge-${p.badge}">${p.badge}</span>` : ''}
+        <div class="product-img">
+          <img src="${p.image}" alt="${p.name}" style="width:100%; height:100%; object-fit:cover;">
+          <div class="product-img-overlay"></div>
+          <div class="product-quick-add" onclick="addToCart(${p.id})">+ Add to Cart</div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">${p.cat}</div>
+          <div class="product-name">${p.name}</div>
+          <div class="product-compat">Fits: ${p.compat}</div>
+          <div class="product-bottom">
+            <div>
+              <span class="product-price">KSh ${p.price.toLocaleString()}</span>
+              ${p.oldPrice ? `<span class="product-price-old">KSh ${p.oldPrice.toLocaleString()}</span>` : ''}
+            </div>
+            <div class="product-rating">${p.rating}</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    setupReveal();
+  }
+
+  function filterProducts(btn, filter) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderProducts(filter);
+  }
+
+  // ══ CART ══
+  function addToCart(id) {
+    const product = products.find(p => p.id === id);
+    const existing = cart.find(i => i.id === id);
+    if (existing) {
+      existing.qty++;
+    } else {
+      cart.push({ ...product, qty: 1 });
+    }
+    updateCartUI();
+    showNotification('Added to Cart', `${product.name} - KSh ${product.price.toLocaleString()}`);
+  }
+
+  function removeFromCart(id) {
+    cart = cart.filter(i => i.id !== id);
+    updateCartUI();
+  }
+
+  function updateCartUI() {
+    const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    const count = cart.reduce((s, i) => s + i.qty, 0);
+
+    document.getElementById('cart-badge').textContent = count;
+    document.getElementById('cart-count').textContent = count;
+    document.getElementById('cart-total').textContent = total.toLocaleString();
+
+    const list = document.getElementById('cart-items-list');
+    const footer = document.getElementById('cart-footer');
+
+    if (cart.length === 0) {
+      list.innerHTML = `<div class="cart-empty"><div class="cart-empty-icon">[ ]</div><p>Your cart is empty.<br>Start shopping!</p></div>`;
+      footer.style.display = 'none';
+    } else {
+      list.innerHTML = cart.map(i => `
+        <div class="cart-item">
+          <div class="cart-item-img"><img src="${i.image}" alt="${i.name}" style="width:100%; height:100%; object-fit:cover;"></div>
+          <div>
+            <div class="cart-item-name">${i.name}</div>
+            <div class="cart-item-price">KSh ${i.price.toLocaleString()} × ${i.qty}</div>
+          </div>
+          <button class="cart-item-remove" onclick="removeFromCart(${i.id})">×</button>
+        </div>
+      `).join('');
+      footer.style.display = 'block';
+    }
+  }
+
+  function toggleCart() {
+    document.getElementById('cart-sidebar').classList.toggle('open');
+    document.getElementById('cart-overlay').classList.toggle('open');
+  }
+
+  // ══ TICKER ══
+  function setupTicker() {
+    const items = ['Free Delivery Over KSh 5,000', 'Genuine OEM Parts', '30-Day Returns', '8,000+ Happy Customers', 'Same-Day Dispatch Nairobi', 'Expert Parts Support', '12,000+ Parts in Stock', 'Trusted Since 2015'];
+    const html = [...items, ...items].map(t => `<span class="ticker-item">${t} <span class="ticker-dot">◆</span></span>`).join('');
+    document.getElementById('ticker-inner').innerHTML = html;
+  }
+
+  // ══ BRANDS ══
+  function setupBrands() {
+    const brands = ['Honda', 'Yamaha', 'Bajaj', 'TVS', 'Suzuki', 'Toyota', 'Nissan', 'NGK', 'Bosch', 'Dunlop'];
+    const html = [...brands, ...brands].map(b => `<div class="brand-item">${b}</div>`).join('');
+    document.getElementById('brands-inner').innerHTML = html;
+  }
+
+  // ══ SCROLL REVEAL ══
+  function setupReveal() {
+    const els = document.querySelectorAll('.reveal:not(.visible), .reveal-left:not(.visible)');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    els.forEach(el => obs.observe(el));
+  }
+
+  // ══ NOTIFICATION ══
+  function showNotification(title, desc) {
+    const n = document.getElementById('notification');
+    document.getElementById('notif-title').textContent = title;
+    document.getElementById('notif-desc').textContent = desc;
+    n.classList.add('show');
+    setTimeout(() => n.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>
