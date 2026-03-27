@@ -1,27 +1,26 @@
 <?php
 // signup.php
-require 'db.php'; // Bring in the database connection
+include 'db.php'; 
 
-// Check if the form was submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $full_name = $_POST['fullname'];
+    // Note: your HTML uses name="fullname", not "full_name"
+    $fullname = $_POST['fullname'];
     $username = $_POST['username'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    $email    = $_POST['email'];
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    // Secure the password using hashing
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-    // Prepare the SQL statement to prevent hackers from injecting malicious code
-    $stmt = $conn->prepare("INSERT INTO users (full_name, username, email, password) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("ssss", $full_name, $username, $email, $hashed_password);
+    $sql = "INSERT INTO users (full_name, username, email, password) VALUES (?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssss", $fullname, $username, $email, $password);
 
     if ($stmt->execute()) {
-        echo "Account created successfully! <a href='index.html'>Go back to Login</a>";
+        // After signup, send them back to index.html 
+        // We add a "success" message in the URL so they know it worked
+        header("Location: index.html?signup=success"); 
+        exit();
     } else {
-        echo "Error: That email or username might already be taken.";
+        echo "Error: " . $stmt->error;
     }
-
     $stmt->close();
     $conn->close();
 }

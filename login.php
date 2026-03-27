@@ -1,35 +1,29 @@
 <?php
 // login.php
-session_start(); // Start a session to remember the user is logged in
-require 'db.php';
+include 'db.php';
+session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Search for the user by email
-    $stmt = $conn->prepare("SELECT id, full_name, password FROM users WHERE email = ?");
+    $sql = "SELECT id, username, password FROM users WHERE email = ?";
+    $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    if ($row = $result->fetch_assoc()) {
-        // Verify the typed password matches the secured password in the database
-        if (password_verify($password, $row['password'])) {
-            $_SESSION['user_id'] = $row['id'];
-            $_SESSION['user_name'] = $row['full_name'];
-            
-            // Redirect the user to the main site
-            header("Location: index.html#categories"); 
+    if ($user = $result->fetch_assoc()) {
+        if (password_verify($password, $user['password'])) {
+            // Login Success! 
+            // We tell index.html that the user is logged in
+            header("Location: index.html?login=success&user=" . urlencode($user['username']));
             exit();
         } else {
-            echo "Incorrect password. <a href='index.html'>Try again</a>";
+            echo "Invalid password.";
         }
     } else {
-        echo "No account found with that email. <a href='index.html'>Try again</a>";
+        echo "No user found with that email.";
     }
-
-    $stmt->close();
-    $conn->close();
 }
 ?>

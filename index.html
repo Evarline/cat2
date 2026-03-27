@@ -1978,6 +1978,18 @@
     n.classList.add('show');
     setTimeout(() => n.classList.remove('show'), 3000);
   }
+  // ══ LOGIN/SIGNUP REDIRECT HANDLER ══
+  // Check if we just came back from a successful login
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has('login') && urlParams.get('login') === 'success') {
+      const username = urlParams.get('user');
+      if (username) enterSite(username); // This triggers your built-in JS function to show the shop!
+  }
+  // Check if we just signed up
+  if (urlParams.has('signup') && urlParams.get('signup') === 'success') {
+      showNotification('Success!', 'Account created! Please login.');
+      switchTab('login');
+  }
 </script>
 </body>
 </html>
